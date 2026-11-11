@@ -1,18 +1,23 @@
 <?php
 if(!defined('DB_SERVER')){
-    require_once("../initialize.php");
+    require_once(__DIR__ . "/../initialize.php");
 }
 class DBConnection{
 
-    private $host = DB_SERVER;
-    private $username = DB_USERNAME;
-    private $password = DB_PASSWORD;
-    private $database = DB_NAME;
-    private $port = defined('DB_PORT') ? DB_PORT : 3306;
+    private $host;
+    private $username;
+    private $password;
+    private $database;
+    private $port;
     
     public $conn;
     
     public function __construct(){
+        $this->host = defined('DB_SERVER') ? DB_SERVER : 'localhost';
+        $this->username = defined('DB_USERNAME') ? DB_USERNAME : 'root';
+        $this->password = defined('DB_PASSWORD') ? DB_PASSWORD : '';
+        $this->database = defined('DB_NAME') ? DB_NAME : 'ovas_db';
+        $this->port = defined('DB_PORT') ? (int)DB_PORT : 3306;
 
         if (!isset($this->conn)) {
             $this->conn = mysqli_init();
@@ -62,10 +67,10 @@ class DBConnection{
         try {
             $check = $this->conn->query("SHOW TABLES LIKE 'system_info'");
             if ($check && $check->num_rows == 0) {
-                $sql_file = (defined('base_app') ? base_app : __DIR__ . '/../') . 'database/ovas_db.sql';
+                $sql_file = (defined('base_app') ? base_app : (__DIR__ . '/../')) . 'database/ovas_db.sql';
                 if (file_exists($sql_file)) {
                     $sql = file_get_contents($sql_file);
-                    // Remove comment lines
+                    // Remove SQL comment lines
                     $lines = explode("\n", $sql);
                     $clean_sql = '';
                     foreach ($lines as $line) {

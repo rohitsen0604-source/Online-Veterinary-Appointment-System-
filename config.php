@@ -4,9 +4,9 @@ ini_set('date.timezone','Asia/Manila');
 date_default_timezone_set('Asia/Manila');
 session_start();
 
-require_once('initialize.php');
-require_once('classes/DBConnection.php');
-require_once('classes/SystemSettings.php');
+require_once(__DIR__ . '/initialize.php');
+require_once(__DIR__ . '/classes/DBConnection.php');
+require_once(__DIR__ . '/classes/SystemSettings.php');
 $db = new DBConnection;
 $conn = $db->conn;
 
@@ -48,5 +48,4 @@ function isMobileDevice(){
     //Otherwise return false..  
     return false;
 }
-ob_end_flush();
 ?>
