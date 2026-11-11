@@ -75,27 +75,17 @@ class DBConnection{
     private function auto_initialize(){
         try {
             $check = $this->conn->query("SHOW TABLES LIKE 'system_info'");
-            if ($check && $check->num_rows == 0) {
+            if (!$check || $check->num_rows == 0) {
                 $sql_file = (defined('base_app') ? base_app : (__DIR__ . '/../')) . 'database/ovas_db.sql';
                 if (file_exists($sql_file)) {
                     $sql = file_get_contents($sql_file);
-                    // Remove SQL comment lines
-                    $lines = explode("\n", $sql);
-                    $clean_sql = '';
-                    foreach ($lines as $line) {
-                        $trimmed = trim($line);
-                        if (strpos($trimmed, '--') === 0 || strpos($trimmed, '/*') === 0) {
-                            continue;
+                    // Split into statements by semicolon followed by newline
+                    $statements = preg_split('/;\s*[\r\n]+/', $sql);
+                    foreach ($statements as $stmt) {
+                        $stmt = trim($stmt);
+                        if (!empty($stmt)) {
+                            $this->conn->query($stmt);
                         }
-                        $clean_sql .= $line . "\n";
-                    }
-
-                    if ($this->conn->multi_query($clean_sql)) {
-                        do {
-                            if ($result = $this->conn->store_result()) {
-                                $result->free();
-                            }
-                        } while ($this->conn->more_results() && $this->conn->next_result());
                     }
                 }
             }

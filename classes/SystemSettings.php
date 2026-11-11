@@ -14,18 +14,22 @@ class SystemSettings extends DBConnection{
 		// if(!isset($_SESSION['system_info'])){
 			$sql = "SELECT * FROM system_info";
 			$qry = $this->conn->query($sql);
+			if($qry && $qry instanceof mysqli_result){
 				while($row = $qry->fetch_assoc()){
 					$_SESSION['system_info'][$row['meta_field']] = $row['meta_value'];
 				}
+			}
 		// }
 	}
 	function update_system_info(){
 		$sql = "SELECT * FROM system_info";
 		$qry = $this->conn->query($sql);
+		if($qry && $qry instanceof mysqli_result){
 			while($row = $qry->fetch_assoc()){
 				if(isset($_SESSION['system_info'][$row['meta_field']]))unset($_SESSION['system_info'][$row['meta_field']]);
 				$_SESSION['system_info'][$row['meta_field']] = $row['meta_value'];
 			}
+		}
 		return true;
 	}
 	function update_settings_info(){
