@@ -14,3 +14,4 @@ chown -R www-data:www-data /var/www/html/uploads
 chmod -R 775 /var/www/html/uploads
 
 exec apache2-foreground
+

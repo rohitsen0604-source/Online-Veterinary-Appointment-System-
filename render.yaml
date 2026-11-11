@@ -18,3 +18,4 @@ services:
         value: ovas_db
       - key: DB_SSL
         value: true
+
